@@ -1,8 +1,14 @@
 # UQ-Course-and-Program-lister
-***NOTE: THIS PROGRAM IS NOT AFFILIATED WITH UQ IN ANY WAY. USE AT YOUR OWN RISK.***
-A simple program which lists all the undergraduate programs (degrees) provided by The University of Queensland, and all of the courses possible for a program.
+***NOTE: THIS PROGRAM IS NOT AFFILIATED WITH UQ (The University of Queensland) IN ANY WAY. USE AT YOUR OWN RISK.***
 
-## Purpose
+UQ Course Planner and Program Lister (UQCPL) is a simple program which lists all the undergraduate programs (degrees) provided by The University of Queensland, and all of the courses possible for a program.
+
+## Overview
+UQCPL has 4 main functions which can be used either alone using a terminal window, or by integrating it with your own program to create something bigger. The program can return a list containing all of the undergraduate programs currently being provided by The University of Queensland. The list can contain either a 10-character program code or the course name in English. Otherwise, the program can also print out a user-friendly table containing all of the program codes and names together.
+
+UQCPL can alo return a list containing all of the courses in either an 8-character format, the units for each course as an integer, or the course names in plain english. Similarly, the program can also return a table containing all the course codes, units and course names in a user friendly table format.
+
+Please note that these user-friendly tables return *nothing* and only print out these tables so that the data can be interpreted easily.
 
 
 ## How to use
