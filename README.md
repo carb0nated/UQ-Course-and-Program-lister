@@ -5,7 +5,7 @@ A simple program which lists all the undergraduate programs (degrees) provided b
 ## Purpose
 
 
-## How to use:
+## How to use
 ### Installation
 #### Install libraries
 This progam uses the `lxml` and `requests` libraries which do not come pre-installed on some devices.
