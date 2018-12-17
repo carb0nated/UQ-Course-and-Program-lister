@@ -59,13 +59,7 @@ def inquire_about_course():
 
             'Check for any errors while parsing data'
             check_for_invalid_outliers(info, courses, units)
-
-            #'A list containing all available undergraduate programs (Program Codes)'
-            #available_undergrad_programs_codes = get_raw_program_code(obtain_program_details_from_page())
-
-            #'A list containing all available undergraduate programs (Program Names)'
-            #avaialble_undergrad_program_names = get_raw_program_name(obtain_program_details_from_page())
-
+            
             while True:
                 choice = input("What would you like to get the data in the form of? A LIST or a TABLE? ").upper()
                 if choice == "LIST":
