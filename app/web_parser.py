@@ -1,29 +1,130 @@
 from lxml import html
 import requests
 import sys
+import course_lister
+import web_parser
 
 print("""
 ==============================================================================
-Program planner for UQ's Bachelor of Engineering / Software (H) Single Major
-                                 >>SOFTWX2342<<
+                UQ Course and Program Lister v0.9.0 
+                            >> UQCPL <<
                                     
-Created by Fouad Khalaf, 2018.
+                    Created by Fouad Khalaf, 2018.
 
-Important note: this program is not affiliated with UQ. Use at your own risk.
+Important note: this program is NOT affiliated with UQ. Use at your own risk.
 ==============================================================================
 """)
 
 
 
 def program_to_lookup():
-    program = input("""
-What program / degree would you like to inquire about? Please enter it in the following format e.g. (SOFTWY2342).
+    done = False
+    while (done == False):
+        program = input("""
+Would you like to inquire about a course or a program?
 For a list of program codes, type 'help'. 
-""")
-    if program == "help":
-        print("Add course code list here...")
+    """)
+        if program == "help":
+            prog_codes = web_parser.get_raw_program_code(
+                web_parser.obtain_program_details_from_page())
+            prog_names = web_parser.get_raw_program_name(
+                web_parser.obtain_program_details_from_page())
+            course_lister.print_program_table(prog_codes, prog_names)
+        elif program.lower() == "course":
+            done = True
+            inquire_about_course()
+        elif program.lower() == "program":
+            done = True
+            inquire_about_program()
+        else:
+            print("Sorry, that was an invalid option.")
+            
+
+
+"""
+Communicates with the user if they ask about course information.
+"""
+def inquire_about_course():
+    while True:
+        program = input("What program would you like to inquire about? ").upper()
+        if len(program) != 10:
+            print("That was an invalid program code. It must be in a 10-character format. e.g. SOFTWX2342: ")
+            continue
+        else:
+            'Run parsers and cleanup functions'
+            struct = obtain_page_details(program, year_to_lookup())
+            info = cleanup_course_info(get_raw_courses_info(struct))
+            courses = cleanup_course_list(get_raw_course_code(struct))
+            units = cleanup_units_from_courses(get_raw_courses_info(struct))
+
+            'Check for any errors while parsing data'
+            check_for_invalid_outliers(info, courses, units)
+
+            #'A list containing all available undergraduate programs (Program Codes)'
+            #available_undergrad_programs_codes = get_raw_program_code(obtain_program_details_from_page())
+
+            #'A list containing all available undergraduate programs (Program Names)'
+            #avaialble_undergrad_program_names = get_raw_program_name(obtain_program_details_from_page())
+
+            while True:
+                choice = input("What would you like to get the data in the form of? A LIST or a TABLE? ").upper()
+                if choice == "LIST":
+                    print("Course codes: " + str(courses), end='\n\n')
+                    print("Units: " + str(units), end='\n\n')
+                    print("Course name: " + str(info), end='\n\n')
+                    break
+                elif choice == "TABLE":
+                    course_lister.print_course_table(courses, units, info)
+                    break
+                else:
+                    print("That was an invalid choice. Please enter either LIST or TABLE. ")
+                    continue
+            break
+    prompt_go_back()
+
+
+
+"""
+Communicates with the user if they ask about undergraduate programs information.
+"""
+def inquire_about_program():
+    while True:
+        choice = input("Would you like the programs to be in the form of a LIST or a TABLE? ").upper()
+        if choice == "LIST":
+            while True:
+                name_or_code = input("Would you like the data to be retured in a 10-char program code or name in plain english? Type CODE or NAME: ").upper()
+                if name_or_code != "NAME" and name_or_code != "CODE":
+                    print("Invalid choice. Please type either NAME or CODE... ")
+                else:
+                    break
+            if name_or_code == "NAME":
+                print(get_raw_program_name(obtain_program_details_from_page()))
+            elif name_or_code == "CODE":
+                print(get_raw_program_code(obtain_program_details_from_page()))
+            break
+        elif choice == "TABLE":
+            print("WARNING: Feature is still under development...")
+            prog_codes = get_raw_program_code(obtain_program_details_from_page())
+            prog_names = get_raw_program_name(obtain_program_details_from_page())
+            course_lister.print_program_table(prog_codes, prog_names)
+            break
+        else:
+            print("That was an invalid choice. Please enter either LIST or TABLE. ")
+    prompt_go_back()
+
+
+
+"""
+Prompts the user back to the beginning of the program.
+Exits the program if 'y' was not entered.
+"""
+def prompt_go_back():
+    choice = input("Would you like to go back? [y/n]")
+    if choice == 'y':
+        program_to_lookup()
     else:
-        print("zzzz")
+        sys.exit()
+
 
 
 """
@@ -45,7 +146,6 @@ def year_to_lookup():
             continue
         else:
             return(year)
-            break
 
 
 """
@@ -53,10 +153,10 @@ Obtains all the data from the webpage.
 
 Returns: data from the webpage in the form of a tree structure.
 """
-def obtain_page_details(year):
+def obtain_page_details(program, year):
     'Obtain page details'
     page = requests.get(
-        'https://my.uq.edu.au/programs-courses/plan_display.html?acad_plan=SOFTWX2342&year='+str(year))
+        'https://my.uq.edu.au/programs-courses/plan_display.html?acad_plan='+str(program)+'&year='+str(year))
     struct = html.fromstring(page.content)
     return(struct)
 
@@ -195,20 +295,7 @@ def get_electives_only(struct):
 Main function of the program.
 """
 def main():
-    'Run parsers and cleanup functions'
-    struct = obtain_page_details(year_to_lookup())
-    info = cleanup_course_info(get_raw_courses_info(struct))
-    courses = cleanup_course_list(get_raw_course_code(struct))
-    units = cleanup_units_from_courses(get_raw_courses_info(struct))
-    
-    'Check for any errors while parsing data'
-    check_for_invalid_outliers(info, courses, units)
-
-    'A list containing all available undergraduate programs (Program Codes)'
-    available_undergrad_programs_codes = get_raw_program_code(obtain_program_details_from_page())
-
-    'A list containing all available undergraduate programs (Program Names)'
-    avaialble_undergrad_program_names = get_raw_program_name(obtain_program_details_from_page())
+    program_to_lookup()
     
 
 if __name__ == "__main__":

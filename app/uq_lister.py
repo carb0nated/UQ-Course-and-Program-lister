@@ -11,7 +11,7 @@ sys.path.append(file_dir)
 Main function of the program.
 """
 def main():
-    'Run parsers and cleanup functions'
+    ''''Run parsers and cleanup functions'
     struct = web_parser.obtain_page_details(
         web_parser.year_to_lookup())
     info = web_parser.cleanup_course_info(
@@ -30,10 +30,11 @@ def main():
     web_parser.check_for_invalid_outliers(info, courses, units)
 
     'Prints available courses'
-    #course_lister.print_course_table(courses, units, info)
+    course_lister.print_course_table(courses, units, info)
 
     'Prints available programs'
-    course_lister.print_program_table(prog_codes, prog_names)
+    course_lister.print_program_table(prog_codes, prog_names)'''
+    web_parser.program_to_lookup()
     
 
 if __name__ == "__main__":
