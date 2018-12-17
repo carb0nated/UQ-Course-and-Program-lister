@@ -39,4 +39,4 @@ You may add this program to yours by importing it. To do that:
 2. Run the program and follow the user prompts.
 
 ## Usage
-You are allowed to use this program for free, and even integrate it with your open source projects as long as it's purely used for non-commercial purposes. Contributions and improvements are welcome and highly appreciated!
+You are allowed to use this program for free, and even integrate it with your open source projects as long as it's properly credited. Contributions and improvements are welcome and highly appreciated!
